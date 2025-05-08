@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const connectDb = require('./database/db.js');
 const authRoutes = require('./routes/authRouts/authRoutes.js');
 const profileRouter = require('./routes/profileRoutes.js');
+const postRoutes = require('./routes/PostRoutes.js');
 
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(cookieParser());
 
 app.use('/auth', authRoutes);
 app.use('/profile', profileRouter);
+app.use('/post', postRoutes);
 
 app.listen(PORT, ()=>{
     console.log("Sever is running on: ",PORT);

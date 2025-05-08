@@ -43,6 +43,10 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:'User'
     }],
+    posts:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Post'
+    }],
     notification:[{
         type:{
             type: String,

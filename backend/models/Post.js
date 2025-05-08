@@ -4,7 +4,11 @@ const postSchema = mongoose.Schema({
     content:{
         type:String,
         required: true,
-        trim: true
+        trim: true,
+        default: ''
+    },
+    graphics:{
+        type: String
     },
     author:{
         type: mongoose.Schema.Types.ObjectId,
@@ -15,7 +19,7 @@ const postSchema = mongoose.Schema({
         ref: 'User'
         
     }],
-    Comment:[{
+    comment:[{
        type: mongoose.Schema.Types.ObjectId,
        ref:'Comment'
     }],
@@ -27,9 +31,10 @@ postSchema.virtual('likeCount').get(function () {
     return this.likes.length;
 });
 
-postSchema.virtual('commentCounts').get(function () {
+postSchema.virtual('commentCount').get(function () {
     return this.comment.length;
-})
+});
+
 
 
 module.exports = mongoose.model('Post',postSchema);
