@@ -192,7 +192,7 @@ module.exports.updateCommentLike = async (req, res) => {
 
 exports.unlikeComment = async (req, res) => {
   try {
-    const {commentId} = req.params;
+    const { commentId } = req.params;
     const userId = req.userId;
 
     const comment = await Comment.findById(commentId);
@@ -217,7 +217,7 @@ exports.unlikeComment = async (req, res) => {
 };
 exports.unlikeReplyComment = async (req, res) => {
   try {
-    const {replyCommentId} = req.params;
+    const { replyCommentId } = req.params;
     const userId = req.userId;
 
     const comment = await Comment.findById(replyCommentId);
@@ -249,7 +249,14 @@ module.exports.updateReplyCommentLike = async (req, res) => {
     if (!replyComment) {
       return res.status(404).json({ message: 'comment not found.' });
     }
+    if (replyComment.likes.includes(userId)) {
+      return res
+        .status(400)
+        .json({ message: 'You have already liked this comment' });
+    }
+
     replyComment.likes.push(userId);
+    await replyComment.save();
     return res
       .status(200)
       .json({ message: 'Like for this comment is updated.' });
