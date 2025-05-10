@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
-const { Comment, Reply } = require('../models/Comment.js');
+const Comment= require('../models/Comment.js');
+const Reply = require('../models/Reply.js');
 const User = require('../models/User.js');
 const Post = require('../models/Post.js');
 module.exports.createComment = async (req, res) => {
@@ -193,6 +194,7 @@ module.exports.updateCommentLike = async (req, res) => {
 exports.unlikeComment = async (req, res) => {
   try {
     const { commentId } = req.params;
+    
     const userId = req.userId;
 
     const comment = await Comment.findById(commentId);
@@ -206,7 +208,7 @@ exports.unlikeComment = async (req, res) => {
         .json({ message: 'You have not liked this comment' });
     }
 
-    comment.likes = comment.likes.filter((id) => id.toString() !== userId);
+    comment.likes = comment.likes.filter((id) => id && id.toString() !== userId);
     await comment.save();
 
     res.status(200).json({ message: 'Comment unliked', likes: comment.likes });
@@ -220,7 +222,7 @@ exports.unlikeReplyComment = async (req, res) => {
     const { replyCommentId } = req.params;
     const userId = req.userId;
 
-    const comment = await Comment.findById(replyCommentId);
+    const comment = await Reply.findById(replyCommentId);
     if (!comment) {
       return res.status(404).json({ message: 'Comment not found' });
     }
@@ -231,7 +233,7 @@ exports.unlikeReplyComment = async (req, res) => {
         .json({ message: 'You have not liked this comment' });
     }
 
-    comment.likes = comment.likes.filter((id) => id.toString() !== userId);
+    comment.likes = comment.likes.filter((id) => id && id.toString() !== userId);
     await comment.save();
 
     res.status(200).json({ message: 'Comment unliked', likes: comment.likes });
@@ -278,14 +280,14 @@ module.exports.commentLikeCount = async (req, res) => {
       likeCount: commentLikeCount,
     });
   } catch (error) {
-    console.error('Error in getCommentLike: ', error);
+    console.error('Error in commentLikeCount: ', error);
     return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 module.exports.replyCommentLikeCount = async (req, res) => {
   const { replyCommentId } = req.params;
   try {
-    const replyComment = await Comment.findById(replyCommentId);
+    const replyComment = await Reply.findById(replyCommentId);
     if (!replyComment) {
       return res.status(404).json({ message: 'comment not found.' });
     }

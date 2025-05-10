@@ -8,15 +8,13 @@ const validator = [
   body('content').notEmpty().withMessage('content is required.').trim(),
 ];
 router.post('/:postId', authMiddleware, validator, commentController.createComment);
-router.put(
-  '/update/:commentId',
+router.put('/update/:commentId',
   authMiddleware,
   isAuthor,
   validator,
   commentController.updateComment
 );
-router.delete(
-  '/delete/:commentId',
+router.delete('/delete/:commentId',
   authMiddleware,
   isAuthor,
   commentController.deleteComment
@@ -25,3 +23,4 @@ router.post('/like/:commentId', commentController.updateCommentLike);
 router.post('/unlike/:commentId', commentController.unlikeComment);
 router.get('/likes/:commentId', commentController.commentLikeCount);
 module.exports = router;
+ 

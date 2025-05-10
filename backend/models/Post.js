@@ -32,7 +32,7 @@ postSchema.virtual('likeCount').get(function () {
 });
 
 postSchema.virtual('commentCount').get(function () {
-    return this.comment.length ? this.comment.length : 0;
+    return this.comments.length? this.comment.length : 0;
 });
 
 

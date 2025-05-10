@@ -11,6 +11,8 @@ const isAuthor = async (req, res, next) => {
       : req.baseUrl.includes('/replies')
       ? 'replyCommentId'
       : 'postId';
+      console.log(Model, "modelname:", modelName);
+      
     const resourceId = req.params[idParamsName];
 
     const resource = await Model.findById(resourceId);

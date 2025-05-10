@@ -71,6 +71,8 @@ module.exports.getOnePost = async (req, res) => {
 module.exports.updatePost = async (req, res) => {
   const { postId } = req.params;
   const { content } = req.body;
+  console.log(postId);
+  
   try {
     const post = await Post.findById(postId);
     if (!post) {
@@ -123,13 +125,14 @@ module.exports.updateLikes = async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: 'Post not found.' });
     }
-    if (post.likes.inculdes(userId)) {
+    if (post.likes.includes(userId)) {
       return res
         .status(400)
         .json({ message: 'You have already liked this post' });
     }
 
     post.likes.push(userId);
+    await post.save();
     return res
       .status(200)
       .json({ message: 'Like count for this post up by one.' });
@@ -139,20 +142,19 @@ module.exports.updateLikes = async (req, res) => {
   }
 };
 exports.unlikePost = async (req, res) => {
-  try {
-    const postId = req.params.id;
+    const {postId} = req.params ;
     const userId = req.userId; 
-
-    const post = await Post.findById(postId);
+  try {
+     const post = await Post.findById(postId);
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      return res.status(404).json({ message: 'Post not found.' });
     }
 
     if (!post.likes.includes(userId)) {
       return res.status(400).json({ message: 'You have not liked this post' });
     }
-
-    post.likes = post.likes.filter(id => id.toString() !== userId);
+    
+    post.likes = post.likes.filter((id) => id && id.toString() !== userId);
     await post.save();
 
     res.status(200).json({ message: 'Post unliked successfully', likes: post.likes });

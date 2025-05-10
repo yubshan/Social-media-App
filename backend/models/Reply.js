@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-
-const commentSchema = mongoose.Schema(
+const replySchema = mongoose.Schema(
   {
     content: {
       type: String,
@@ -12,27 +11,21 @@ const commentSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    post:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:'Post'
-    },
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
       },
     ],
-    replies:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:'Reply'
-    }]
+    parentComment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment',
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
-
-commentSchema.virtual('likeCount').get(function () {
+replySchema.virtual('likeCount').get(function () {
   return this.likes.length;
 });
-module.exports = mongoose.model('Comment', commentSchema)
+
+module.exports = mongoose.model("Reply", replySchema);

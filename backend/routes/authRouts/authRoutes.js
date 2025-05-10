@@ -20,8 +20,7 @@ const validator = [
   body('username').notEmpty().withMessage('username is required').trim(),
 ];
 router.post('/register', validator, authController.registerUser);
-router.post(
-  '/register/email-verification',
+router.post( '/register/email-verification',
   [
     body('token').notEmpty().withMessage('Token is required.'),
     validator.slice(0, 0),
@@ -29,8 +28,7 @@ router.post(
   authController.verifyEmail
 );
 router.post('/login', validator.slice(0, 1), authController.loginUser);
-router.post(
-  '/forgot-password',
+router.post('/forgot-password',
   [
     body('email')
       .isEmail()
@@ -42,8 +40,7 @@ router.post(
   ],
   authController.forgotPassword
 );
-router.post(
-  '/reset-password/:token',
+router.post( '/reset-password/:token',
   [
     body('password')
       .notEmpty()
