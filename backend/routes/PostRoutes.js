@@ -26,5 +26,7 @@ router.delete(
   isAuthor,
   postController.deletePost
 );
-
+router.get('/likes/:postId', postController.getLikeCount);
+router.post('/likes/:postId', postController.updateLikes);
+router.get('/comment/:postId', postController.getCommentCount)
 module.exports = router;

@@ -104,3 +104,49 @@ module.exports.deletePost = async (req, res) => {
         return res.status(500).json({message:"Internal server error."})
     }
 }
+
+module.exports.updateLikes = async (req, res) => {
+    const {postId}= req.params;
+    const userId  = req.userId;
+    try {
+        const post = await Post.findById(postId);
+        if(!post){
+            return res.status(404).json({message:"Post not found."});
+        };
+        post.likes.push(userId);
+        return res.status(200).json({message:"Like count for this post up by one."});
+    } catch (error) {
+        console.error("Error in getPostLIked : ", error);
+        return res.status(500).json({message:"Internal server error."})
+    }
+}
+
+module.exports.getLikeCount = async(req, res) =>{
+    const {postId} = req.params;
+    try {
+        const post = await Post.findById(postId);
+        if(!post){
+            return res.status(404).json({message:"Post not found"});
+        };
+        const likeCount = post.likeCount;
+        return res.status(200).json({message:'like count of this post.', likeCount : likeCount});
+    } catch (error) {
+        console.error("Error in getLikeCount: ", error);
+        return res.status(500).json({message:"Internal server error."});
+    }
+}
+module.exports.getCommentCount = async (req, res) => {
+    const {postId} = req.params;
+    try {
+        const post = await Post.findById(postId);
+        if(!post){
+            return res.status(404).json({message:"Post not found."});
+        };
+        const commentCount = post.commentCount;
+        return res.status(200).json({message:'comment count for this post.', commentCount: commentCount})
+    } catch (error) {
+        console.error("Error in getCommentCount : ", error);
+        
+    }
+}
+

@@ -28,11 +28,11 @@ const postSchema = mongoose.Schema({
 
 
 postSchema.virtual('likeCount').get(function () {
-    return this.likes.length;
+    return this.likes.length? this.likes.length : 0;
 });
 
 postSchema.virtual('commentCount').get(function () {
-    return this.comment.length;
+    return this.comment.length ? this.comment.length : 0;
 });
 
 

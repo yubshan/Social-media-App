@@ -163,3 +163,62 @@ module.exports.deleteReplyComment = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
+module.exports.updateCommentLike = async (req, res) => {
+    const {commentId} = req.params;
+    const userId = req.userId;
+    try {
+        const comment = await Comment.findById(commentId);
+        if(!comment){
+            return res.status(404).json({message:"comment not found."});
+        };
+        comment.likes.push(userId);
+        return res.status(200).json({message:'Like for this comment is updated.'});
+    } catch (error) {
+        console.error("Error in updataCommentLike:", error);
+        return res.status(500).json({message:"Internal server error"});
+    }
+}
+module.exports.updateReplyCommentLike = async (req, res) => {
+    const {replyCommentId} = req.params;
+    const userId = req.userId;
+    try {
+        const replyComment = await Reply.findById(replyCommentId);
+        if(!replyComment){
+            return res.status(404).json({message:"comment not found."});
+        };
+        replyComment.likes.push(userId);
+        return res.status(200).json({message:'Like for this comment is updated.'});
+    } catch (error) {
+        console.error("Error in updataCommentLike:", error);
+        return res.status(500).json({message:"Internal server error"});
+    }
+}
+module.exports.commentLikeCount = async (req, res)=>{
+    const {commentId} =req.params;
+    try {
+        const comment = await Comment.findById(commentId);
+        if(!comment){
+            return res.status(404).json({message:"comment not found."})
+        };
+        const commentLikeCount = comment.likeCount;
+        return res.status(200).json({message:'like count for this comment.', likeCount:commentLikeCount});
+    } catch (error) {
+        console.error("Error in getCommentLike: ", error);
+        return res.status(500).json({message:"Internal server error."})
+    }
+}
+module.exports.replyCommentLikeCount = async (req, res)=>{
+    const {replyCommentId} =req.params;
+    try {
+        const replyComment = await Comment.findById(replyCommentId);
+        if(!replyComment){
+            return res.status(404).json({message:"comment not found."})
+        };
+        const commentLikeCount = replyComment.likeCount;
+        return res.status(200).json({message:'like count for this comment.', likeCount:commentLikeCount});
+    } catch (error) {
+        console.error("Error in getCommentLike: ", error);
+        return res.status(500).json({message:"Internal server error."})
+    }
+}
