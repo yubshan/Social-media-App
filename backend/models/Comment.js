@@ -36,13 +36,17 @@ const commentSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    post:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Post'
+    },
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
       },
     ],
-    Reply:[{
+    replies:[{
         type: mongoose.Schema.Types.ObjectId,
         ref:'Reply'
     }]
@@ -59,5 +63,6 @@ replySchema.virtual('likeCount').get(function () {
   return this.likes.length;
 });
 
-
-module.exports = mongoose.model('Comment', commentSchema), mongoose.model('Reply', replySchema);
+const CommentModel = mongoose.model('Comment', commentSchema);
+const ReplyModel = mongoose.model('Reply', replySchema);
+module.exports = { Comment: CommentModel, Reply: ReplyModel };
