@@ -22,5 +22,6 @@ router.delete(
   commentController.deleteComment
 );
 router.post('/like/:commentId', commentController.updateCommentLike);
+router.post('/unlike/:commentId', commentController.unlikeComment);
 router.get('/likes/:commentId', commentController.commentLikeCount);
 module.exports = router;
