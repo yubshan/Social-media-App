@@ -10,7 +10,7 @@ const profileSchema = mongoose.Schema({
     },
     location: String,
     skills : [String],
-    social: {
+    socials: {
         twitter: String , 
         facebook : String, 
         linkden: String, 
@@ -18,7 +18,7 @@ const profileSchema = mongoose.Schema({
     },
 
 }, {
-    timestapms: true,
+    timestamps: true,
 });
 
 module.exports = mongoose.model("Profile", profileSchema);

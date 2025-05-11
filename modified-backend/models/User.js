@@ -38,7 +38,7 @@ const userSchema = mongoose.Schema({
     resetPasswordVerificationCode : String,
     resetPasswordVerificationCodeExpiresAt: Date,
 },{
-    timestapms: true,
+    timestamps: true,
 });
 
 userSchema.virtual('followerCount').get(function () {
