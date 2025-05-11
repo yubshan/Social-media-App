@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-
+const upload = require('../middlewares/cloudinary.js');
 const Post = require('../models/Post.js');
 const User = require('../models/User.js');
 module.exports.getAllPost = async (req, res) => {
@@ -23,21 +23,34 @@ module.exports.getAllPost = async (req, res) => {
 };
 module.exports.createPost = async (req, res) => {
   const userId = req.userId;
-  const { content, graphics } = req.body;
-  const error = validationResult(req);
-  if (!error.isEmpty()) {
-    return res.status(400).json({ error: error.array() });
-  }
+  const { content } = req.body;
+  const graphics = req.file;
+
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+      return res.status(400).json({ error: error.array() });
+    }
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res
+        .status(404)
+        .json({ message: 'User not found.' })
+        .populate('posts');
+    }
+    let graphicsURL = user.posts.graphics;
+
+    if (graphics) {
+      const cloudinaryGraphicsURL = await upload(graphics.path);
+      console.log(cloudinaryGraphicsURL);
+
+      graphicsURL = cloudinaryGraphicsURL;
     }
 
     const newPost = new Post({
       content: content,
       author: user._id,
-      graphics,
+      graphics: graphicsURL,
     });
 
     await newPost.save();
@@ -71,13 +84,12 @@ module.exports.getOnePost = async (req, res) => {
 module.exports.updatePost = async (req, res) => {
   const { postId } = req.params;
   const { content } = req.body;
-  console.log(postId);
-  
   try {
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: 'Post not found.' });
     }
+
     post.content = content;
 
     await post.save();
@@ -102,12 +114,9 @@ module.exports.deletePost = async (req, res) => {
 
     const deletePost = await Post.deleteOne({ _id: postId });
     if (deletePost.deletedCount === 0) {
-      return res
-        .status(400)
-        .json({
-          message:
-            'something went wrong. post may not exist or was not deleted.',
-        });
+      return res.status(400).json({
+        message: 'something went wrong. post may not exist or was not deleted.',
+      });
     }
 
     return res.status(200).json({ message: 'Post is successfully deleted.' });
@@ -142,10 +151,10 @@ module.exports.updateLikes = async (req, res) => {
   }
 };
 exports.unlikePost = async (req, res) => {
-    const {postId} = req.params ;
-    const userId = req.userId; 
+  const { postId } = req.params;
+  const userId = req.userId;
   try {
-     const post = await Post.findById(postId);
+    const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: 'Post not found.' });
     }
@@ -153,17 +162,18 @@ exports.unlikePost = async (req, res) => {
     if (!post.likes.includes(userId)) {
       return res.status(400).json({ message: 'You have not liked this post' });
     }
-    
+
     post.likes = post.likes.filter((id) => id && id.toString() !== userId);
     await post.save();
 
-    res.status(200).json({ message: 'Post unliked successfully', likes: post.likes });
+    res
+      .status(200)
+      .json({ message: 'Post unliked successfully', likes: post.likes });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
 module.exports.getLikeCount = async (req, res) => {
   const { postId } = req.params;
@@ -189,12 +199,10 @@ module.exports.getCommentCount = async (req, res) => {
       return res.status(404).json({ message: 'Post not found.' });
     }
     const commentCount = post.commentCount;
-    return res
-      .status(200)
-      .json({
-        message: 'comment count for this post.',
-        commentCount: commentCount,
-      });
+    return res.status(200).json({
+      message: 'comment count for this post.',
+      commentCount: commentCount,
+    });
   } catch (error) {
     console.error('Error in getCommentCount : ', error);
   }
