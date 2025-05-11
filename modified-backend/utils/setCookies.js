@@ -1,7 +1,7 @@
 const JWT = require('jsonwebtoken');
 require('dotenv').config();
 
-const setCookie = function (res, next) {
+const setCookie = function (res, userId) {
   const token = JWT.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '7D',
   });
