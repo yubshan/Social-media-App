@@ -9,6 +9,10 @@ const replySchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
     },
+    likes:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"User",
+    }],
     comment: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'Comment'
@@ -16,5 +20,9 @@ const replySchema = mongoose.Schema({
 },{
     timestamps: true
 });
+
+replySchema.virtual('likeCount').get(function () {
+    return this.likes.length;
+})
 
 module.exports = mongoose.model("Reply", replySchema);

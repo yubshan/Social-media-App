@@ -28,7 +28,7 @@ const postSchema = mongoose.Schema(
   }
 );
 
-postSchema.virtual('likesCount').set(function () {
+postSchema.virtual('likeCount').set(function () {
   return this.likes.length;
 });
 postSchema.virtual('commentCount').set(function () {
