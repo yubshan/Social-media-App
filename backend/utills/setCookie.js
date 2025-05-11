@@ -1,4 +1,4 @@
-    const JWT = require('jsonwebtoken');
+        const JWT = require('jsonwebtoken');
     
     function setCookie(res, userId) {
     const token = JWT.sign({ userId }, process.env.JWT_SECRETS, {

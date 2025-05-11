@@ -13,7 +13,7 @@ async function sendEmail(userEmail, verificationToken, isverifyEmail) {
     let title = 'Verify your email address:';
     let body = 'Verification Code'
     if(!isverifyEmail){
-        title = 'Reset Password:';
+       title = 'Reset Password:';
         body = 'Reset Link'
     }
 
