@@ -32,7 +32,7 @@ const isToken = [
 ];
 
 router.post(
-  '/register',
+  '/register',
   isEmail,
   isPassword,
   isUsername,

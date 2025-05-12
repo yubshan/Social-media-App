@@ -47,7 +47,9 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/replies', replyRoutes);
 
 
+
 // error handleing middleware 
 app.use(errorHandler);
+
 
 module.exports = app;
