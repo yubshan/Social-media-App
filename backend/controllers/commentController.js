@@ -41,7 +41,7 @@ module.exports.updateComment = asyncHandler(async (req, res) => {
   const commentId = req.params.id;
   const errors = validationResult(req);
   if (!errors.isEmpty())
-    return res.status(400).json({ success: false, error: error.array() });
+    return res.status(400).json({ success: false, error: errors.array() });
   const comment = await Comment.findById(commentId);
   if (!comment)
     return res
@@ -122,7 +122,7 @@ module.exports.commentUnlike = asyncHandler(async (req, res) => {
   comment.likes = comment.likes.filter((id) => id && id.toString() !== userId);
   await comment.save();
   return res.status(200).json({
-    status: true,
+    success: true,
     message: 'comment liked successfully.',
     data: comment,
   });

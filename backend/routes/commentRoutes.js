@@ -1,26 +1,27 @@
 const express = require('express');
-const { body } = require('express-validator');
-const commentController = require('../controller/commentController.js');
-const authMiddleware = require('../middlewares/authmiddleware/authmiddleware.js');
-const isAuthor = require('../middlewares/isAuthor.js');
+const {body, param}= require('express-validator');
+
+// import controller and middlewares
+const commentController = require("../controllers/commentController.js");
+const protect = require("../middlewares/authMiddleware.js");
+const isAdmin = require('../middlewares/isAdmin.js');
+
+// define router 
 const router = express.Router();
-const validator = [
-  body('content').notEmpty().withMessage('content is required.').trim(),
-];
-router.post('/:postId', authMiddleware, validator, commentController.createComment);
-router.put('/update/:commentId',
-  authMiddleware,
-  isAuthor,
-  validator,
-  commentController.updateComment
-);
-router.delete('/delete/:commentId',
-  authMiddleware,
-  isAuthor,
-  commentController.deleteComment
-);
-router.post('/like/:commentId', commentController.updateCommentLike);
-router.post('/unlike/:commentId', commentController.unlikeComment);
-router.get('/likes/:commentId', commentController.commentLikeCount);
-module.exports = router;
- 
+
+// validator 
+const isText = [body('text').notEmpty().withMessage("content can't be empty").trim()];
+const isPostId = param('id').notEmpty().withMessage("post id can't be empty");
+const isCommentId = param('id').notEmpty().withMessage("comment id can't be empty.");
+// routes 
+router.get('/:id', protect,isPostId,  commentController.getAllCommentByPost );
+router.post('/:id',protect , isPostId,isText, commentController.createComment );
+router.put('/:id',protect, isAdmin, isCommentId, isText, commentController.updateComment );
+router.delete('/:id', protect, isAdmin, isCommentId, commentController.deleteComment);
+router.get('/likes/:id', isCommentId, commentController.getLikeCount);
+router.post('/likes/:id', protect, isCommentId, commentController.commentLike);
+router.post('/unlike/:id' , protect, isCommentId, commentController.commentUnlike);
+
+module.exports= router;
+
+

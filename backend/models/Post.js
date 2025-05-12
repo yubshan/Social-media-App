@@ -1,17 +1,11 @@
 const mongoose = require('mongoose');
-
 const postSchema = mongoose.Schema(
   {
     content: {
       type: String,
       required: true,
-      trim: true,
-      default: '',
     },
-    graphics: {
-      type: String,
-      default: '',
-    },
+    media: String,
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -25,19 +19,19 @@ const postSchema = mongoose.Schema(
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment',
+        ref: 'User',
       },
     ],
   },
-  { timestamp: true }
+  {
+    timestamps: true,
+  }
 );
 
-postSchema.virtual('likeCount').get(function () {
-  return this.likes.length ? this.likes.length : 0;
+postSchema.virtual('likeCount').set(function () {
+  return this.likes.length;
 });
-
-postSchema.virtual('commentCount').get(function () {
-  return this.comments.length ? this.comment.length : 0;
+postSchema.virtual('commentCount').set(function () {
+  return this.likes.comments;
 });
-
 module.exports = mongoose.model('Post', postSchema);

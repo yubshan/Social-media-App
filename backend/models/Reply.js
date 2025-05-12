@@ -1,31 +1,28 @@
-const mongoose = require('mongoose');
+const mongoose = require ('mongoose');
 
-const replySchema = mongoose.Schema(
-  {
-    content: {
-      type: String,
-      required: true,
-      trim: true,
+const replySchema = mongoose.Schema({
+    text: {
+        type: String ,
+        required: true,
     },
-    author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-    likes: [
-      {
+    author : {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
-    parentComment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
+        ref:'User',
     },
-  },
-  { timestamps: true }
-);
-replySchema.virtual('likeCount').get(function () {
-  return this.likes.length;
+    likes:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"User",
+    }],
+    comment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Comment'
+    }
+},{
+    timestamps: true
 });
+
+replySchema.virtual('likeCount').get(function () {
+    return this.likes.length;
+})
 
 module.exports = mongoose.model("Reply", replySchema);

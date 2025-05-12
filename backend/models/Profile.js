@@ -5,27 +5,24 @@ const profileSchema = mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
-    },
-    avatar: {
-      type: String,
-      default: 'public/images/avatar.png',
-    },
-    coverPic: {
-      type: String,
-      default: 'public/images/coverPic.jpg',
     },
     bio: {
       type: String,
-      default: '',
-      maxLength: 500,
     },
-    location: {
+    website: {
       type: String,
+    },
+    location: String,
+    skills: [String],
+    socials: {
+      twitter: String,
+      facebook: String,
+      linkden: String,
+      instagram: String,
     },
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 

@@ -12,4 +12,4 @@ module.exports.getUserById = asyncHandler(async (req, res) => {
     if(!user)
         return res.status(404).json({success:false, message:"User not found,"});
     return res.status(200).json({success: true, message:"User found.", data: user});
-})
+});

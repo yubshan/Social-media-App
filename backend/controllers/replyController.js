@@ -14,7 +14,7 @@ module.exports.getAllReplyComment = asyncHandler(async (req, res) => {
 });
 
 module.exports.createReplyComment = asyncHandler(async (req, res) => {
-  const text = req.body;
+  const {text} = req.body;
   const commentId = req.params.id;
   const userId = req.user.id;
   const errors = validationResult(req);
@@ -61,6 +61,7 @@ module.exports.updataReplyComment = asyncHandler(async (req, res) => {
   });
 });
 
+
 module.exports.deleteReplyComment = asyncHandler(async (req, res) => {
   const replyCommentId = req.params.id;
   const deleteReplyComment = await Reply.findByIdAndDelete(
@@ -70,12 +71,14 @@ module.exports.deleteReplyComment = asyncHandler(async (req, res) => {
     return res
       .status(404)
       .json({ success: false, message: 'Reply comment not found.' });
-  deleteReplyComment.comment.replies =
-    deleteReplyComment.comment.replies.filter(
-      (id) => id && id.toString() !== deleteReplyComment.comment
-    );
+  if (deleteReplyComment.comment && deleteReplyComment.comment.replies) { 
+    deleteReplyComment.comment.replies =
+      deleteReplyComment.comment.replies.filter(
+        (id) => id && id.toString() !== replyCommentId 
+      );
     await deleteReplyComment.comment.save();
-    return res.status(200).json({success: true, message: "Reply comment deleted successfully"})
+  }
+  return res.status(200).json({ success: true, message: "Reply comment deleted successfully" });
 });
 
 module.exports.getLikeCount = asyncHandler(async (req, res) => {

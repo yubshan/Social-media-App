@@ -1,2 +1,0 @@
-1. Profile Controller update Profile
-    adding files (images properly)

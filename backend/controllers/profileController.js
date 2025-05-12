@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const cloudinaryUpload = require('../utils/cloudinary.js');
 const Profile = require('../models/Profile.js');
 const User = require('../models/User.js');
 const asyncHandler = require('../utils/asyncHandler.js');
@@ -11,7 +12,7 @@ module.exports.getProfile = asyncHandler(async (req, res) => {
   });
   if (!profile)
     return res
-      .status(400)
+      .status(404)
       .json({ success: false, message: 'Profile not found.' });
   return res
     .status(200)
@@ -19,13 +20,15 @@ module.exports.getProfile = asyncHandler(async (req, res) => {
 });
 
 module.exports.createProfile = asyncHandler(async (req, res) => {
-  const { avatar, bio, website, location, skills, socials } = req.body;
+  const {bio, website, location, skills, socials } = req.body;
+  const avatar = req.file;
   const userId = req.user.id;
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ success: false, error: errors.array() });
   const newProfile = new Profile({
     user: userId,
+    bio,
     website,
     location,
     skills,
@@ -33,8 +36,10 @@ module.exports.createProfile = asyncHandler(async (req, res) => {
   });
   await newProfile.save();
   const user = await User.findById(userId);
-  user.bio = bio;
-  user.avatar = avatar;
+  const avatarUrl = user.avatar;
+  if(avatar)
+    avatarUrl = await cloudinaryUpload(avatar.path);
+  user.avatar = avatarUrl;
 
   await user.save();
   return res.status(201).json({
@@ -44,13 +49,16 @@ module.exports.createProfile = asyncHandler(async (req, res) => {
   });
 });
 
+
 module.exports.updateProfile = asyncHandler(async (req, res) => {
-  const { avatar, bio, website, location, skills, socials } = req.body;
+  const { bio, website, location, skills, socials } = req.body;
+  const avatar = req.file;
   const profileId = req.params.id;
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ success: false, error: errors.array() });
   const updateObject = {
+    bio,
     website,
     location,
     skills,
@@ -63,9 +71,11 @@ module.exports.updateProfile = asyncHandler(async (req, res) => {
   ).populate('user');
   if (!profile || !profile.user)
     return res.status(404).json({ success: false, message: 'User not found.' });
-  profile.user.bio = bio;
-  profile.user.avatar = avatar;
-  await profile.save();
+  const avatarUrl = profile.user.avatar;
+  if(avatar)
+    avatarUrl = await cloudinaryUpload(avatar.path);
+  profile.user.avatar = avatarUrl;
+  await profile.user.save();
   return res.status(200).json({
     success: true,
     message: 'profile updated successfully',

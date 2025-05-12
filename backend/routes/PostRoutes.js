@@ -1,48 +1,31 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const postController = require('../controller/postController.js');
-const authMiddleware = require('../middlewares/authmiddleware/authmiddleware.js');
-const isAuthor = require('../middlewares/isAuthor.js');
-const { body } = require('express-validator');
+const {body, param} = require('express-validator')
 
+// import controller and middlwares
+const postController = require('../controllers/postController.js');
+const protect = require('../middlewares/authMiddleware.js');
+const isAdmin = require('../middlewares/isAdmin.js');
+
+// import multer 
+const upload = require('../middlewares/multer.js')
+
+// define router
 const router = express.Router();
 
-const filePath = 'public/images/';
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, filePath);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const originalExtension = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + uniqueSuffix + originalExtension);
-  },
-});
-const upload = multer({ storage });
+// validator 
+const isContent  = body('content').optional().trim();
+const isUserId = param('id').notEmpty().withMessage("user id must be provided.");
+const isPostId =param('id').notEmpty().withMessage("post id must be provided");
+// routes 
+router.get('/user/:id', protect, isUserId, postController.getAllUserPost );
+router.get('/', protect, postController.getAllPost);
+router.get('/:id', protect, isPostId,postController.getOnePost );
+router.post('/', protect , isContent, upload.single('media'),postController.createPost);
+router.put('/:id', protect, isAdmin, isContent,isPostId, upload.single('media'), postController.updatePost );
+router.delete('/:id', protect, isAdmin, isPostId, postController.deletePost);
+router.get('/likes/:id', isPostId, postController.getLikeCount);
+router.get('/comment/:id', isPostId, postController.getCommentCount);
+router.post('/likes/:id',protect, isPostId, postController.postLike );
+router.post('/unlikes/:id', protect, isPostId, postController.postUnlike);
 
-router.get('/', authMiddleware, postController.getAllPost);
-router.post(
-  '/',
-  authMiddleware,
-  upload.single('graphics'),
-  postController.createPost
-);
-router.get('/:postId', authMiddleware, postController.getOnePost);
-router.put(
-  '/update/:postId',
-  authMiddleware,
-  isAuthor,
-  postController.updatePost
-);
-router.delete(
-  '/delete/:postId',
-  authMiddleware,
-  isAuthor,
-  postController.deletePost
-);
-router.get('/likes/:postId', postController.getLikeCount);
-router.post('/likes/:postId', postController.updateLikes);
-router.post('/unlikes/:postId', postController.unlikePost);
-router.get('/comment/:postId', postController.getCommentCount);
 module.exports = router;

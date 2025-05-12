@@ -8,11 +8,16 @@ const connectDb = require('./config/db.js');
 
 
 // import routes 
-
+const authRoutes = require('./routes/authRoutes.js');
+const userRoutes = require('./routes/userRoutes.js');
+const profileRoutes = require('./routes/profileRoutes.js');
+const postRoutes = require('./routes/postRoutes.js');
+const commentRoutes = require('./routes/commentRoutes.js');
+const replyRoutes = require('./routes/replyRoutes.js');
 
 
 // import middleware 
-
+const errorHandler = require('./middlewares/errorHandler.js');
 
 dotenv.config();
 const app = express();
@@ -34,10 +39,15 @@ app.use('/api/', apilimiter);
 
 
 // Define routes
-
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/replies', replyRoutes);
 
 
 // error handleing middleware 
-
+app.use(errorHandler);
 
 module.exports = app;
