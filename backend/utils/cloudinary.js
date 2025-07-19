@@ -10,11 +10,12 @@ cloudinary.config({
 });
 
 const cloudinaryUpload = asyncHandler(async (filePath) => {
-  const result = await cloudinary.uploader.upload(`${filePath}`);
-  const url = cloudinary.url(result.public_id);
+  console.log(filePath);
+  const result = await cloudinary.uploader.upload(filePath);
+  const url = result.secure_url; 
   await fs.unlink(filePath);
-  console.log('temporary file have been deleted successfully.');
+  console.log('temporary file has been deleted successfully.');
   return url;
 });
 
-module.exports= cloudinaryUpload;
+module.exports = cloudinaryUpload;

@@ -30,7 +30,7 @@ const isUsername = [
 const isToken = [
   param('token').notEmpty().withMessage('Token must be provided.'),
 ];
-
+router.get('/ping' , authController.pingController);
 router.post(
   '/register',
   isEmail,
@@ -41,7 +41,7 @@ router.post(
 router.get('/verify-email/:token', isToken, authController.verifyEmail);
 router.post('/login', isEmail, isPassword, authController.login);
 router.post('/forgot-password', isEmail, authController.forgotPassword);
-router.post(
+router.put(
   '/reset-password/:token',
   isToken,
   isPassword,

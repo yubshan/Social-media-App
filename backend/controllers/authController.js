@@ -6,6 +6,12 @@ const genHashedPassword = require('../utils/genHashedPassword.js');
 const User = require('../models/User.js');
 const sendEmail = require('../utils/sendEmail.js');
 const setCookie = require('../utils/setCookies.js');
+const { log } = require('console');
+
+module.exports.pingController = (req , res)=>{
+  return res.status(200).json({success: true, message:'ok!'});
+}
+
 
 module.exports.register = asyncHandler(async (req, res) => {
   const { email, password, username } = req.body;
@@ -23,6 +29,8 @@ module.exports.register = asyncHandler(async (req, res) => {
     'host'
   )}/verify-email/${verificationCode}`;
   const verificationCodeExpiresAt = Date.now() + 60 * 60 * 1000; //1hrs
+
+  
   const newUser = new User({
     email,
     password: hashedPassword,

@@ -48,17 +48,17 @@ const isInstagram = body('socials.instagram')
   .optional()
   .trim()
   .isURL()
-  .withMessage('Inavlid Instagram Url');
+  .withMessage('Invalid Instagram Url');
 const isFacebook = body('socials.facebook')
   .optional()
   .trim()
   .isURL()
   .withMessage('Invalid facebook url');
-const isLinkden = body('socials.linkden')
+const isLinkden = body('socials.linkeden')
   .optional()
   .trim()
   .isURL()
-  .withMessage('Invalid linkden Url');
+  .withMessage('Invalid linkeden Url');
 const isProfileId = param('id')
   .notEmpty()
   .withMessage('Profile id must be provided.');
@@ -75,9 +75,8 @@ const profileValidate = [
   isFacebook,
   isLinkden,
 ];
-
 // routes
-router.get('/:id', protect, profileController.getProfile);
+
 router.post(
   '/build-profile',
   protect,
@@ -85,6 +84,7 @@ router.post(
   profileValidate,
   profileController.createProfile
 );
+
 router.put(
   '/:id',
   protect,
@@ -93,5 +93,6 @@ router.put(
   profileValidate,
   profileController.updateProfile
 );
+router.get('/:id', protect, profileController.getProfile);
 
 module.exports = router;

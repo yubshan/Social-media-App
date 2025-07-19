@@ -11,7 +11,7 @@ const connectDb = require('./config/db.js');
 const authRoutes = require('./routes/authRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
 const profileRoutes = require('./routes/profileRoutes.js');
-const postRoutes = require('./routes/postRoutes.js');
+const postRoutes = require('./routes/PostRoutes.js');
 const commentRoutes = require('./routes/commentRoutes.js');
 const replyRoutes = require('./routes/replyRoutes.js');
 
@@ -20,7 +20,7 @@ const replyRoutes = require('./routes/replyRoutes.js');
 const errorHandler = require('./middlewares/errorHandler.js');
 
 dotenv.config();
-const app = express();
+const app = express(); 
 
 // Global middleware 
 app.use(express.json());

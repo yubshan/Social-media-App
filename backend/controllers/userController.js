@@ -1,5 +1,7 @@
 const User = require('../models/User.js');
 const asyncHandler = require('../utils/asyncHandler.js');
+const { validationResult } = require('express-validator');
+
 
 module.exports.getAllUser  = asyncHandler(async (req, res) => {
     const users = await User.find().select('-password');

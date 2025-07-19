@@ -3,6 +3,8 @@ require('dotenv').config();
 
 const connectDb = async () => {
     try {
+        console.log(process.env.MONGO_URI);
+        
        const con = await mongoose.connect(process.env.MONGO_URI);
         console.log("MONGO-DB Database is Connected: ", con.connection.host);  
     } catch (error) {

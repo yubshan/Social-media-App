@@ -23,6 +23,7 @@ module.exports.createProfile = asyncHandler(async (req, res) => {
   const {bio, website, location, skills, socials } = req.body;
   const avatar = req.file;
   const userId = req.user.id;
+  
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ success: false, error: errors.array() });
@@ -36,11 +37,11 @@ module.exports.createProfile = asyncHandler(async (req, res) => {
   });
   await newProfile.save();
   const user = await User.findById(userId);
-  const avatarUrl = user.avatar;
+  let avatarUrl = user.avatar;
   if(avatar)
     avatarUrl = await cloudinaryUpload(avatar.path);
   user.avatar = avatarUrl;
-
+  
   await user.save();
   return res.status(201).json({
     success: true,
@@ -71,7 +72,7 @@ module.exports.updateProfile = asyncHandler(async (req, res) => {
   ).populate('user');
   if (!profile || !profile.user)
     return res.status(404).json({ success: false, message: 'User not found.' });
-  const avatarUrl = profile.user.avatar;
+  let avatarUrl = profile.user.avatar;
   if(avatar)
     avatarUrl = await cloudinaryUpload(avatar.path);
   profile.user.avatar = avatarUrl;
