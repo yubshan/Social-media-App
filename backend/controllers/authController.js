@@ -9,7 +9,7 @@ const setCookie = require('../utils/setCookies.js');
 const { log } = require('console');
 
 module.exports.pingController = (req , res)=>{
-  return res.status(200).json({success: true, message:'ok!'});
+  return res.status(200).json({success: true, message:'Auth Controller ping is up!!'});
 }
 
 

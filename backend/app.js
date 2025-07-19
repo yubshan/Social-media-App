@@ -39,6 +39,9 @@ app.use('/api/', apilimiter);
 
 
 // Define routes
+app.use('/api/ping' , (req, res)=>{
+    return res.status(200).json({success: true, message:"API Ping is up."})
+})
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/profile', profileRoutes);
