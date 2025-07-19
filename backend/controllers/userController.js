@@ -33,11 +33,11 @@ module.exports.followUser =asyncHandler (async (req, res) => {
     if (!userToFollow) {
       return res.status(404).json({success: false,  message: 'User to follow not found.' });
     }
-    if (user.follower.includes(userToFollowId)) {
-      return res
-        .status(400)
-        .json({success: false, message: 'You have already followed this user.' });
-    }
+    if (user.following.includes(userToFollowId)) { 
+  return res
+    .status(400)
+    .json({success: false, message: 'You have already followed this user.' });
+}
     user.following.push(userToFollowId);
     await user.save();
 
